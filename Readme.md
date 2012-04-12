@@ -17,3 +17,4 @@ Here are some resources to get you started:
 * [TraMineR User's Guide](http://mephisto.unige.ch/pub/TraMineR/doc/TraMineR-Users-Guide.pdf)
 * [Cluster Library](http://cran.r-project.org/web/packages/cluster/index.html)
 * [Cluster Analysis Tutoral](http://cc.oulu.fi/~jarioksa/opetus/metodi/sessio3.pdf)
+* [Applied Statistics for Bioinformatics using R](http://cran.r-project.org/doc/contrib/Krijnen-IntroBioInfStatistics.pdf)
