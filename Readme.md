@@ -13,4 +13,7 @@ Feel free to push commits to the code so that we together can start building R c
 
 Here are some resources to get you started:
 
-[TraMineR User's Guide](http://mephisto.unige.ch/pub/TraMineR/doc/TraMineR-Users-Guide.pdf)
+* [RStudio IDE](http://rstudio.org/)
+* [TraMineR User's Guide](http://mephisto.unige.ch/pub/TraMineR/doc/TraMineR-Users-Guide.pdf)
+* [Cluster Library](http://cran.r-project.org/web/packages/cluster/index.html)
+* [Cluster Analysis Tutoral](http://cc.oulu.fi/~jarioksa/opetus/metodi/sessio3.pdf)
