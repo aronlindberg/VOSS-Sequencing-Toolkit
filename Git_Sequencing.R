@@ -1,11 +1,12 @@
 #Set the working directory
-setwd("~/Dropbox/R")
+setwd("~/github/local/VOSS-Sequencing-Toolkit")
 
 # Direct output to a textfile
 sink("Sequence_Output.txt", append=FALSE, split=FALSE)
 
-#Load the TraMineR library
+#Load the TraMineR and cluster libraries
 library(TraMineR)
+library(cluster)
 
 #Load the dataset
 github <- read.csv(file = "GitSequences.csv", header = TRUE)
@@ -31,3 +32,7 @@ github.om <- seqdist(github.seq, method="OM", indel=1, sm=costs)
 
 # Display the output in rounded format
 round(github.om)
+
+# Plot a dendrogram
+clusterward <- agnes(github.om, diss = TRUE, method = "ward")
+plot(clusterward, which.plots = 2)
