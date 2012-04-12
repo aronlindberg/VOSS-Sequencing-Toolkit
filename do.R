@@ -4,6 +4,10 @@ setwd("~/github/local/VOSS-Sequencing-Toolkit")
 # Direct output to a textfile
 sink("Sequence_Output.txt", append=FALSE, split=FALSE)
 
+# Source functions and the cleaned datafile
+source("functions.r")
+load("cleaned_data.rdata")
+
 #Load the TraMineR and cluster libraries
 library(TraMineR)
 library(cluster)
