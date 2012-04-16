@@ -13,6 +13,7 @@ Feel free to push commits to the code so that we together can start building R c
 
 Here are some resources to get you started:
 
+* [The R Podcast](http://www.r-podcast.org/)
 * [RStudio IDE](http://rstudio.org/)
 * [TraMineR User's Guide](http://mephisto.unige.ch/pub/TraMineR/doc/TraMineR-Users-Guide.pdf)
 * [Cluster Library](http://cran.r-project.org/web/packages/cluster/index.html)
