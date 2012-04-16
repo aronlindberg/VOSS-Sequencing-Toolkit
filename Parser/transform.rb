@@ -1,10 +1,11 @@
-#  This is copied from https://github.com/igrigorik/githubarchive.org
+# This is copied from https://github.com/igrigorik/githubarchive.org
+# Originally this was intended to upload the data to BigQuery, but I have modified it to just save the file locally 
 
-require 'tempfile'
-require 'time'
-require 'zlib'
-require 'yajl'
-require 'csv'
+require 'tempfile' # This is a utility class for managing temporary files. Initially it was used to store data temporarily while it was uploaded to BigQuery, but I don't think it's used any longer since I used the File.new method to save the file locally.
+require 'time' # Time is a class for storing dates and times. It is used to somehow store certain ranges of dates/times in the same file I think
+require 'zlib' # A compression library, used so that the class Zlib::GzipReader can be used to read the gzipped files.
+require 'yajl' # "Yet Another JSON Library", a JSON parser
+require 'csv' # A class for interfacing with csv files
 
 def flatmap(h, e, prefix = '')
   e.each do |k,v|
@@ -27,7 +28,7 @@ schema = Yajl::Parser.parse(open('schema.js').read)
 headers = schema['configuration']['load']['schema']['fields'].map {|f| f['name']}
 
 begin
-  tmp = File.new("bigoutout.csv", "w+")
+  tmp = File.new("Output.csv", "w+")
   js  = Zlib::GzipReader.new(open(input)).read
 
   Yajl::Parser.parse(js) do |event|
