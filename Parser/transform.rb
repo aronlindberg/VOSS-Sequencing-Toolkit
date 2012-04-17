@@ -7,12 +7,12 @@ require 'zlib' # A compression library, used so that the class Zlib::GzipReader 
 require 'yajl' # "Yet Another JSON Library", a JSON parser
 require 'csv' # A class for interfacing with csv files
 
-def flatmap(h, e, prefix = '')
-  e.each do |k,v|
-    if v.is_a?(Hash)
-      flatmap(h, v, prefix+k+"_")
-    else
-      h[prefix+k] = v unless v.is_a? Array
+def flatmap(h, e, prefix = '') # Defines the function flatmap with the arguments (local variables) h, e & prefix. Only prefix is given a value, which is ''
+  e.each do |k,v| # For each value of e, do k & v ???? k & v stand for key-value pair in a hash I think...
+    if v.is_a?(Hash) # Specifies a condition, if v is a hash, then...
+      flatmap(h, v, prefix+k+"_") # call the function flatmap with the arguments h, v, and prefix+k+_
+    else				# otherwise...
+      h[prefix+k] = v unless v.is_a? Array 
     end
   end
   h
@@ -40,22 +40,8 @@ begin
       else
  
        puts "Unknown field: #{k}, value: #{v}"
-end
-end 
-
+			end
+		end 
 	tmp << r.to_s
-
-
- end
-
-
-#  puts "Uploading file to BigQuery"
-#  puts system('echo' + tmp.path)
-#
-# puts "\nDone.\n"
-#
-# ensure
-# tmp.close
-# tmp.unlink
-
+	end
 end
