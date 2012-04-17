@@ -2,7 +2,7 @@
 setwd("~/github/local/VOSS-Sequencing-Toolkit")
 
 # Direct output to a textfile
-sink("Sequence_Output.txt", append=FALSE, split=FALSE)
+# sink("Sequence_Output.txt", append=FALSE, split=FALSE)
 
 # Source functions and the cleaned datafile
 source("functions.r")
