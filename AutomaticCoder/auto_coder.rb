@@ -8,7 +8,7 @@ Use: Needs an argument, either just the project name, or the author/project
 require 'optparse' #for using options in program
 require 'sqlite3' #loaded to manipulate the database
 
-@options = {verbose:false}
+@options = {verbose:false, db:'github.sqlite'}
 OptionParser.new do |opts|
   opts.banner = "Usage: auto_coder.rb [options]"
 
@@ -18,6 +18,10 @@ OptionParser.new do |opts|
 
   opts.on("-a", "--actor ACTOR", "owner name") do |v|
     @options[:actor] = v
+  end
+
+  opts.on("-d", "--db LOCATION", "sqlite db location") do |v|
+    @options[:db] = v
   end
 
   opts.on("-v", "--verbose", "verbose log (default: false)") do |v|
@@ -104,7 +108,7 @@ end
 
 begin
   # load the data
-  db = SQLite3::Database.open("github.sqlite") #open database file
+  db = SQLite3::Database.open(@options[:db]) #open database file
   db.results_as_hash = true #allows us to address the array of results as a hash
   n = 0 #iterator for sequence number
 
