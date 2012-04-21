@@ -116,6 +116,7 @@ begin
     f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
     puts "Looking for repo #{@options[:repository]} with owner #{@options[:actor]}... This may take some time...\n"
     db.execute("Select * From events where repository_owner='#{@options[:actor]}' AND repository_name='#{@options[:repository]}'") do |row|
+      puts row if @options[:verbose]
       f.puts(row_to_sequence(row, n))
       n += 1
     end
@@ -124,6 +125,7 @@ begin
     f = File.new("#{@options[:repository]}_seq.txt", 'w') #creating sequence file
     puts "Looking for all projects from repo #{@options[:repository]}... This may take some time...\n"
     rows = db.execute("Select * From events where repository_name='#{@options[:repository]}'") do |row|
+      puts row if @options[:verbose]
       f.puts(row_to_sequence(row, n))
       n += 1
     end
