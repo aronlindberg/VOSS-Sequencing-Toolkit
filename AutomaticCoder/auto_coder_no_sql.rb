@@ -6,9 +6,6 @@ Use: Needs an argument, either just the project name, or the author/project
 =end
 
 require 'optparse' #for using options in program
-require 'sqlite3' #loaded to manipulate the database
-require 'yajl' #JSON Parser
-require 'open-uri'
 require 'octokit'
 @options = {verbose:false, db:'github.sqlite'}
 OptionParser.new do |opts|
@@ -20,10 +17,6 @@ OptionParser.new do |opts|
 
   opts.on("-a", "--actor ACTOR", "owner name") do |v|
     @options[:actor] = v
-  end
-
-  opts.on("-d", "--db LOCATION", "sqlite db location") do |v|
-    @options[:db] = v
   end
 
   opts.on("-v", "--verbose", "verbose log (default: false)") do |v|
