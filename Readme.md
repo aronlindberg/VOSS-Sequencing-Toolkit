@@ -1,3 +1,7 @@
+# Credits #
+
+Omri developed the tools for pulling data from GitHub and parsing it into a useable format. Rock on!
+
 # VOSS Sequencing Toolkit #
 
 The purpose of this repository is to:
