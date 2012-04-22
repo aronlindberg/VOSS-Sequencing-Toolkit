@@ -7,7 +7,7 @@ Use: Needs an argument, either just the project name, or the author/project
 
 require 'optparse' #for using options in program
 require 'octokit'
-@options = {verbose:false, db:'github.sqlite'}
+@options = {verbose:false}
 OptionParser.new do |opts|
   opts.banner = "Usage: auto_coder.rb [options]"
 
@@ -15,7 +15,7 @@ OptionParser.new do |opts|
     @options[:repository] = v
   end
 
-  opts.on("-a", "--actor ACTOR", "owner name") do |v|
+  opts.on("-a", "--actor ACTOR", "Mandatory actor name") do |v|
     @options[:actor] = v
   end
 
@@ -23,7 +23,7 @@ OptionParser.new do |opts|
     @options[:verbose] = v
   end
 end.parse!
-#raise OptionParser::MissingArgument if @options[:repository].nil?
+raise OptionParser::MissingArgument if @options[:repository].nil? || @options[:actor].nil?
 =begin
 This function builds our clustal sequence using the heuristic we defined as follows:
   Actor:
