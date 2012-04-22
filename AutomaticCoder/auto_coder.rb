@@ -96,7 +96,7 @@ def row_to_sequence(row, number)
   case row['type'] #determine data flow
   when 'PublicEvent', 'CreateEvent', 'ForkEvent', 'ForkApplyEvent', 'MemberEvent', 'TeamAddEvent', 'WatchEvent', 'IssuesEvent', 'FollowEvent'
     seq<<"Out"
-  when 'PullRequestEvent', 'PushEvent', 'DeleteEvent', 'PullRequestReviewCommentEvent', 'CommitCommentEvent', 'IssueCommentEvent',  'GistEvent', 'GollumEvent'
+  when 'PullRequestEvent',  'PushEvent', 'DeleteEvent', 'PullRequestReviewCommentEvent', 'CommitCommentEvent', 'IssueCommentEvent',  'GistEvent', 'GollumEvent'
     seq<<"Upd"
   when 'DownloadEvent'
     seq<<"Inp"
@@ -121,7 +121,7 @@ begin
       n += 1
     end
     f.close
-  elsif @options[:owner].nil? #query for all projects including original fork of input
+  elsif @options[:actor].nil? #query for all projects including original fork of input
     f = File.new("#{@options[:repository]}_seq.txt", 'w') #creating sequence file
     puts "Looking for all projects from repo #{@options[:repository]}... This may take some time...\n"
     rows = db.execute("Select * From events where repository_name='#{@options[:repository]}'") do |row|
