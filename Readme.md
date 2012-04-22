@@ -1,7 +1,3 @@
-# Credits #
-
-Omri developed the tools for pulling data from GitHub and parsing it into a useable format. Rock on!
-
 # VOSS Sequencing Toolkit #
 
 The purpose of this repository is to:
@@ -23,3 +19,7 @@ Here are some resources to get you started:
 * [Cluster Library](http://cran.r-project.org/web/packages/cluster/index.html)
 * [Cluster Analysis Tutoral](http://cc.oulu.fi/~jarioksa/opetus/metodi/sessio3.pdf)
 * [Applied Statistics for Bioinformatics using R](http://cran.r-project.org/doc/contrib/Krijnen-IntroBioInfStatistics.pdf)
+
+## Credits ##
+
+Omri developed the tools for pulling data from GitHub and parsing it into a useable format. Rock on!
