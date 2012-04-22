@@ -2,11 +2,11 @@
 Name: Ruby Github Sequence Coder
 Author: Omri Shiv
 Description: An automatic translator of github sequence data to clustal sequences for sequence analysis 
-Use: Needs an argument, either just the project name, or the author/project
+Use: Needs 2 arguments: -a author -p project which maps to author/project in Github parlance
 =end
 
 require 'optparse' #for using options in program
-require 'octokit'
+require 'octokit' #github API library
 @options = {verbose:false}
 OptionParser.new do |opts|
   opts.banner = "Usage: auto_coder.rb [options]"
@@ -103,17 +103,13 @@ def event_to_sequence(event, number)
 end
 
 begin
-  # load the data
   puts "Looking for all projects from repo #{@options[:repository]}... This may take some time...\n"
-  if events = Octokit::Client.new(:auto_traversal => true).repository_events("#{@options[:actor]}/#{@options[:repository]}")
-    puts events.size
-    n = 0 #iterator for sequence number
+  if events = Octokit::Client.new(:auto_traversal => true).repository_events("#{@options[:actor]}/#{@options[:repository]}") #Query Github API for project events
     f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
-    events.collect{|event|
-      f.puts(event_to_sequence(event, n))
-      n += 1   
+    events.enum_for(:each_with_index).collect{|event, i| #iterate through events array with index
+      f.puts(event_to_sequence(event, i)) #append sequence to file
     }
-    f.close
+    f.close #close file
   end
-  rescue (Octokit::NotFound) then puts "Could not find project #{@options[:actor]}/#{@options[:repository]}"
+  rescue (Octokit::NotFound) then puts "Could not find project #{@options[:actor]}/#{@options[:repository]}" #rescue project not found error
 end
