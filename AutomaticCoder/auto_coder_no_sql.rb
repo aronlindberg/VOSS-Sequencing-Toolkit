@@ -105,13 +105,15 @@ end
 begin
   # load the data
   puts "Looking for all projects from repo #{@options[:repository]}... This may take some time...\n"
-  events = Octokit::Client.new(:auto_traversal => true).repository_events("#{@options[:actor]}/#{@options[:repository]}")
-  puts events.size
-  n = 0 #iterator for sequence number
-  f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
-  events.collect{|event|
-    f.puts(event_to_sequence(event, n))
-    n += 1   
-  }
-  f.close
+  if events = Octokit::Client.new(:auto_traversal => true).repository_events("#{@options[:actor]}/#{@options[:repository]}")
+    puts events.size
+    n = 0 #iterator for sequence number
+    f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
+    events.collect{|event|
+      f.puts(event_to_sequence(event, n))
+      n += 1   
+    }
+    f.close
+  end
+  rescue (Octokit::NotFound) then puts "Could not find project #{@options[:actor]}/#{@options[:repository]}"
 end
