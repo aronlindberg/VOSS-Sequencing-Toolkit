@@ -106,7 +106,7 @@ begin
   puts "Looking for all projects from repo #{@options[:repository]}... This may take some time...\n"
   events = Octokit::Client.new(:auto_traversal => true).repository_events("#{@options[:actor]}/#{@options[:repository]}") #Query Github API for project events
   f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
-    events.enum_for(:each_with_index).collect{|event, i| #iterate through events array with index
+  events.enum_for(:each_with_index).collect{|event, i| #iterate through events array with index
     f.puts(event_to_sequence(event, i)) #append sequence to file
   }
   f.close #close file
