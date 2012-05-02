@@ -1,6 +1,7 @@
 ## Heuristics for Coding the GitHub Timeline Manually ##
 
 **To determine actor**
+
 1. Compare column 'repository_owner' (J) with column 'actor' (Z).
 2. If they are the same, then actor=repo owner else;
 3. Actor=Not repo owner
