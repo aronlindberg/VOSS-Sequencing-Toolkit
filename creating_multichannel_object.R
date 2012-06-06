@@ -25,7 +25,7 @@ io.seq <- seqdef(io)
 mcdist <- seqdistmc(channels=list(actor.seq, activity.seq, object.seq, io.seq),
                     method="OM", sm =list("TRATE", "TRATE", "TRATE", "TRATE")) 	 
 
-## Using a weight of 2 for children channel and specifying substitution-cost 
+## Specifying weights for channels and specifying substitution-cost 
 smatrix <- list() 
 smatrix[[1]] <- seqsubm(actor.seq, method="CONSTANT") 
 smatrix[[2]] <- seqsubm(activity.seq, method="CONSTANT") 
