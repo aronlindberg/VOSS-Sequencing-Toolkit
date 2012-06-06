@@ -1,6 +1,8 @@
-data(biofam) 
-## Building one channel per type of event left, children or married 
-bf <- as.matrix(biofam[, 10:25]) 
+## Load CSV file with raw sequence data
+
+## Building one channel per aspect
+
+
 children <-  bf==4 | bf==5 | bf==6 
 married <- bf == 2 | bf== 3 | bf==6 
 left <- bf==1 | bf==3 | bf==5 | bf==6 
