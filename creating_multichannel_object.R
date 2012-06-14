@@ -22,8 +22,7 @@ object.seq <- seqdef(object)
 io.seq <- seqdef(io)
 
 ## Using transition rates to compute substitution costs on each channel 
-mcdist <- seqdistmc(channels=list(actor.seq, activity.seq, object.seq, io.seq),
-                    method="OM", sm =list("TRATE", "TRATE", "TRATE", "TRATE")) 	 
+mcdist <- seqdistmc(channels=list(actor.seq, activity.seq, object.seq, io.seq), method="OM", sm =list("TRATE", "TRATE", "TRATE", "TRATE")) 	 
 
 ## Specifying weights for channels and specifying substitution-cost 
 smatrix <- list() 
@@ -42,5 +41,3 @@ github.seq <- seqdef(mcdist2)
 
 # Plot common sequences
 seqfplot(github.seq)
-
-
