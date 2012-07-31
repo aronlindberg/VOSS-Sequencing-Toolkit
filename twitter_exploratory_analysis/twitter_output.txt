@@ -1,0 +1,132 @@
+ [>] sequence object created with TraMineR version 1.8-1 
+ [>] 1 sequences in the data set, 1 unique 
+ [>] min/max sequence length: 404/404
+ [>] alphabet (state labels):  
+     1=ForkEvent (ForkEvent)
+     2=IssueCommentEvent (IssueCommentEvent)
+     3=IssuesEvent (IssuesEvent)
+     4=PullRequestEvent (PullRequestEvent)
+     5=PullRequestReviewCommentEvent (PullRequestReviewCommentEvent)
+     6=PushEvent (PushEvent)
+     7=WatchEvent (WatchEvent)
+ [>] dimensionality of the sequence space: 2424 
+ [>] colors: 1=#7FC97F 2=#BEAED4 3=#FDC086 4=#FFFF99 5=#386CB0 6=#F0027F 7=#BF5B17 
+ [>] sequence object created with TraMineR version 1.8-1 
+ [>] 1 sequences in the data set, 1 unique 
+ [>] min/max sequence length: 400/400
+ [>] alphabet (state labels):  
+     1=CommitCommentEvent (CommitCommentEvent)
+     2=ForkEvent (ForkEvent)
+     3=IssueCommentEvent (IssueCommentEvent)
+     4=IssuesEvent (IssuesEvent)
+     5=PullRequestEvent (PullRequestEvent)
+     6=PushEvent (PushEvent)
+     7=WatchEvent (WatchEvent)
+ [>] dimensionality of the sequence space: 2400 
+ [>] colors: 1=#7FC97F 2=#BEAED4 3=#FDC086 4=#FFFF99 5=#386CB0 6=#F0027F 7=#BF5B17 
+                              Mean
+ForkEvent                       30
+IssueCommentEvent               68
+IssuesEvent                     10
+PullRequestEvent                60
+PullRequestReviewCommentEvent   30
+PushEvent                       52
+WatchEvent                     154
+                   Mean
+CommitCommentEvent    4
+ForkEvent            74
+IssueCommentEvent    81
+IssuesEvent          35
+PullRequestEvent      9
+PushEvent             2
+WatchEvent          195
+                                   [-> ForkEvent] [-> IssueCommentEvent]
+[ForkEvent ->]                         0.10000000             0.03333333
+[IssueCommentEvent ->]                 0.04411765             0.23529412
+[IssuesEvent ->]                       0.00000000             0.30000000
+[PullRequestEvent ->]                  0.08333333             0.35000000
+[PullRequestReviewCommentEvent ->]     0.00000000             0.50000000
+[PushEvent ->]                         0.01960784             0.01960784
+[WatchEvent ->]                        0.11688312             0.07142857
+                                   [-> IssuesEvent] [-> PullRequestEvent]
+[ForkEvent ->]                           0.00000000            0.20000000
+[IssueCommentEvent ->]                   0.04411765            0.11764706
+[IssuesEvent ->]                         0.00000000            0.00000000
+[PullRequestEvent ->]                    0.01666667            0.08333333
+[PullRequestReviewCommentEvent ->]       0.10000000            0.00000000
+[PushEvent ->]                           0.01960784            0.54901961
+[WatchEvent ->]                          0.01298701            0.08441558
+                                   [-> PullRequestReviewCommentEvent] [-> PushEvent]
+[ForkEvent ->]                                             0.03333333     0.06666667
+[IssueCommentEvent ->]                                     0.08823529     0.23529412
+[IssuesEvent ->]                                           0.00000000     0.10000000
+[PullRequestEvent ->]                                      0.05000000     0.05000000
+[PullRequestReviewCommentEvent ->]                         0.40000000     0.00000000
+[PushEvent ->]                                             0.05882353     0.23529412
+[WatchEvent ->]                                            0.03246753     0.11688312
+                                   [-> WatchEvent]
+[ForkEvent ->]                          0.56666667
+[IssueCommentEvent ->]                  0.23529412
+[IssuesEvent ->]                        0.60000000
+[PullRequestEvent ->]                   0.36666667
+[PullRequestReviewCommentEvent ->]      0.00000000
+[PushEvent ->]                          0.09803922
+[WatchEvent ->]                         0.56493506
+                        [-> CommitCommentEvent] [-> ForkEvent] [-> IssueCommentEvent]
+[CommitCommentEvent ->]              0.25000000      0.0000000              0.2500000
+[ForkEvent ->]                       0.00000000      0.1081081              0.2837838
+[IssueCommentEvent ->]               0.01234568      0.1728395              0.1728395
+[IssuesEvent ->]                     0.00000000      0.1714286              0.2857143
+[PullRequestEvent ->]                0.00000000      0.1111111              0.6666667
+[PushEvent ->]                       0.00000000      0.0000000              1.0000000
+[WatchEvent ->]                      0.01030928      0.2319588              0.1391753
+                        [-> IssuesEvent] [-> PullRequestEvent] [-> PushEvent]
+[CommitCommentEvent ->]       0.00000000            0.00000000    0.000000000
+[ForkEvent ->]                0.06756757            0.00000000    0.000000000
+[IssueCommentEvent ->]        0.14814815            0.06172840    0.012345679
+[IssuesEvent ->]              0.08571429            0.02857143    0.000000000
+[PullRequestEvent ->]         0.11111111            0.00000000    0.000000000
+[PushEvent ->]                0.00000000            0.00000000    0.000000000
+[WatchEvent ->]               0.06701031            0.01546392    0.005154639
+                        [-> WatchEvent]
+[CommitCommentEvent ->]       0.5000000
+[ForkEvent ->]                0.5405405
+[IssueCommentEvent ->]        0.4197531
+[IssuesEvent ->]              0.4285714
+[PullRequestEvent ->]         0.1111111
+[PushEvent ->]                0.0000000
+[WatchEvent ->]               0.5309278
+    Entropy
+1 0.8697238
+    Entropy
+1 0.6973036
+  Turbulence
+1   250.8977
+  Turbulence
+1   240.3388
+ [>] sequence object created with TraMineR version 1.8-1 
+ [>] 1 sequences in the data set, 1 unique 
+ [>] min/max sequence length: 404/404
+ [>] alphabet (state labels):  
+     1=ForkEvent (ForkEvent)
+     2=IssueCommentEvent (IssueCommentEvent)
+     3=IssuesEvent (IssuesEvent)
+     4=PullRequestEvent (PullRequestEvent)
+     5=PullRequestReviewCommentEvent (PullRequestReviewCommentEvent)
+     6=PushEvent (PushEvent)
+     7=WatchEvent (WatchEvent)
+ [>] dimensionality of the sequence space: 2424 
+ [>] colors: 1=#7FC97F 2=#BEAED4 3=#FDC086 4=#FFFF99 5=#386CB0 6=#F0027F 7=#BF5B17 
+ [>] sequence object created with TraMineR version 1.8-1 
+ [>] 1 sequences in the data set, 1 unique 
+ [>] min/max sequence length: 400/400
+ [>] alphabet (state labels):  
+     1=CommitCommentEvent (CommitCommentEvent)
+     2=ForkEvent (ForkEvent)
+     3=IssueCommentEvent (IssueCommentEvent)
+     4=IssuesEvent (IssuesEvent)
+     5=PullRequestEvent (PullRequestEvent)
+     6=PushEvent (PushEvent)
+     7=WatchEvent (WatchEvent)
+ [>] dimensionality of the sequence space: 2400 
+ [>] colors: 1=#7FC97F 2=#BEAED4 3=#FDC086 4=#FFFF99 5=#386CB0 6=#F0027F 7=#BF5B17 

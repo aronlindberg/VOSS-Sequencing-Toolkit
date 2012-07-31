@@ -6,7 +6,7 @@ library(TraMineR)
 library(cluster)
 
 ## Load CSV file with raw sequence data
-activity_sequences <- read.csv(file = "ActivitySequences.csv", header = TRUE)
+activity_sequences <- read.csv(file = "ActivitySequences.csv", header = FALSE)
 
 ## Define the sequence object
 activity.seq <- seqdef(activity_sequences)
