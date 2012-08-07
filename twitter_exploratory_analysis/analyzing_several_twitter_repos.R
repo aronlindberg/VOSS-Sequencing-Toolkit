@@ -23,7 +23,7 @@ library(cluster)
 twitter_sequences_transposed <- t(twitter_sequences <- read.csv(file = "twitter_events_mini.csv", header = TRUE))
 
 ## Define the sequence object
-twitter.seq <- seqdef(twitter_sequences_transposed)
+twitter.seq <- seqdef(twitter_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="", id=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
 
 ## Summarize the sequence object
 summary(twitter.seq)
@@ -43,9 +43,6 @@ seqST(twitter.seq)
 # Complexity
 seqici(twitter.seq)
 
-# Longest common subsequence
-seqLLCS(twitter.seq)
-
 # Next are optimal distance matching statistics
 # But first we need to compute the OM
 
@@ -53,8 +50,11 @@ twitter_costs <- seqsubm(twitter.seq, method="TRATE")
 twitter.om <- seqdist(twitter.seq, method="OM", indel=1, sm=twitter_costs, with.missing=FALSE)
 
 # Create a dendrogram
-clusterward <- agnes(twitter.om, diss = TRUE, method = "ward")
-plot(clusterward, which.plots = 2)
+clusterward <- agnes(twitter.om, diss = TRUE, method = "ward", )
+plot(clusterward, which.plots = 2, labels=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
+
+bannerplot(clusterward, labels=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
+
 
 # Plot stuff
 seqdplot(twitter.seq)
