@@ -38,18 +38,37 @@ bootstrap.seq <- seqdef(bootstrap_sequences)
 summary(commons.seq)
 summary(bootstrap.seq)
 
-## Calculate various statistics
+## Frequencies
 seqmeant(commons.seq)
 seqmeant(bootstrap.seq)
 
+# Transition rates
 seqtrate(commons.seq)
 seqtrate(bootstrap.seq)
 
+# Entropy
 seqient(commons.seq)
 seqient(bootstrap.seq)
 
+# Turbulence
 seqST(commons.seq)
 seqST(bootstrap.seq)
 
+# Complexity
+seqici(commons.seq)
+seqici(bootstrap.seq)
+
 # Longest common subsequence
 seqLLCS(commons.seq, bootstrap.seq)
+
+# Next are optimal distance matching statistics
+# But first we need to compute the OM
+
+costs_bootstrap <- seqsubm(bootstrap.seq, method="TRATE")
+bootstrap.om <- seqdist(bootstrap.seq, method="OM", sm=costs_bootstrap)
+
+costs_commons <- seqsubm(commons.seq, method="TRATE")
+commons.om <- seqdist(commons.seq, method="OM", sm=costs_commons)
+
+## Representative set using the neighborhood density criterion
+bootstrap.rep <- seqrep(bootstrap.seq, dist.matrix=bootstrap.om, criterion="density")
