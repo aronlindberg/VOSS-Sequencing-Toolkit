@@ -19,6 +19,8 @@ library(cluster)
 # Direct output to a textfile
 sink("twitter_output.txt", append=FALSE, split=FALSE)
 
+## 
+
 ## Load CSV file with raw sequence data
 twitter_sequences_transposed <- t(twitter_sequences <- read.csv(file = "twitter_events_mini.csv", header = TRUE))
 

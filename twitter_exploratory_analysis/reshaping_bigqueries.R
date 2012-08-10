@@ -8,22 +8,22 @@ library(reshape)
 events.raw <- read.csv(file = "all_events.csv", header = TRUE)
 
 # Mini version
-mini.events.raw <- head(read.csv(file = "all_events.csv", header = TRUE, colClasses = "character"), 100)
+events.raw <- head(read.csv(file = "all_events.csv", header = TRUE, colClasses = "character"), 100)
 
-m.mini.events <- melt.data.frame(mini.events.raw, id.vars = c("repository_name", "type", "created_at"))
+#SO Solution
 
-cast(m.mini.events, created_at ~ repository_name | .)
- 
+data.split <- split(events.raw$type, events.raw$repository_name)
+data.split
 
-# Melt the CSV
-m.events.raw <- melt(events.raw)
+list.to.df <- function(arg.list) {
+  max.len  <- max(sapply(arg.list, length))
+  arg.list <- lapply(arg.list, `length<-`, max.len)
+  as.data.frame(arg.list)
+}
 
+df.out <- list.to.df(data.split)
+df.out
 
-# Cast it differently
-cast(m.events.raw, type ~ repository_name, length)
+# Define the sequence object
 
-cast(m.events.raw, repository_name ~ created_at ~ type)
-
-cast(m.events.raw, value=repository_name + type) 
-
-(m.events.raw <- cbind(m.events.raw, colsplit(m.events.raw$variable, names = c("treatment", "time"))))
+events.seq <- seqdef(df.out)
