@@ -1,12 +1,12 @@
-# In order to generate the sequence I query bigquery.cloud.google.com
+# In order to generate the sequences I query bigquery.cloud.google.com
 # as follows:
 #
-# SELECT type, created_at FROM [githubarchive:github.timeline]
-# WHERE 
-#   (repository_name="put_repo_name_here") AND
-#   (created_at CONTAINS '2012-')
+# SELECT type, created_at, repository_name FROM 
+# [githubarchive:github.timeline]
+# WHERE
+# (created_at CONTAINS '2012-')
 # AND repository_owner="twitter"
-# ORDER BY created_at
+# ORDER BY created_at, repository_name;
 #
 
 #Set the working directory
@@ -17,15 +17,45 @@ library(TraMineR)
 library(cluster)
 
 # Direct output to a textfile
-sink("twitter_output.txt", append=FALSE, split=FALSE)
+# sink("twitter_output.txt", append=FALSE, split=FALSE)
 
-## 
+# To reset, use:
+# sink(file = NULL)
+
+## Load CSV file
+events.raw <- read.csv(file = "all_events.csv", header = TRUE)
+
+#SO Solution
+
+data.split <- split(events.raw$type, events.raw$repository_name)
+data.split
+
+list.to.df <- function(arg.list) {
+  max.len  <- max(sapply(arg.list, length))
+  arg.list <- lapply(arg.list, `length<-`, max.len)
+  as.data.frame(arg.list)
+}
+
+df.out <- list.to.df(data.split)
+df.out
+
+# Write to CSV to check
+write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
 
 ## Load CSV file with raw sequence data
-twitter_sequences_transposed <- t(twitter_sequences <- read.csv(file = "twitter_events_mini.csv", header = TRUE))
+
+twitter_sequences <- read.csv(file = "out.csv", header = TRUE)
+
+# Turn this command on to get only the head of 1000
+
+twitter_sequences <- head(twitter_sequences, 1000)
+
+twitter_sequences_transposed <- t(twitter_sequences)
+
+repo_names = colnames(twitter_sequences)
 
 ## Define the sequence object
-twitter.seq <- seqdef(twitter_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="", id=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
+twitter.seq <- seqdef(twitter_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
 
 ## Summarize the sequence object
 summary(twitter.seq)
@@ -53,9 +83,9 @@ twitter.om <- seqdist(twitter.seq, method="OM", indel=1, sm=twitter_costs, with.
 
 # Create a dendrogram
 clusterward <- agnes(twitter.om, diss = TRUE, method = "ward")
-plot(clusterward, which.plots = 2, labels=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
+plot(clusterward, which.plots = 2, labels=colnames(twitter_sequences))
 
-bannerplot(clusterward, labels=c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"))
+bannerplot(clusterward, labels=repo_names)
 
 # Plot stuff
 seqdplot(twitter.seq)
@@ -69,7 +99,7 @@ op <- par(mar = rep(0, 4))
 
 # Build a typology
 cl1.4 <- cutree(clusterward, k = 10)
-cl1.4fac <- factor(cl1.4, labels = paste(c("commons", "finagle", "flockdb", "gizzard", "hoganjs", "mysql", "ostrich", "scalding", "twui", "zipkin"), 1:10))
+cl1.4fac <- factor(cl1.4, labels = paste(colnames(twitter_sequences), 1:10))
 
 cl1.4fac <- factor(cl1.4,, 1:10)
 
