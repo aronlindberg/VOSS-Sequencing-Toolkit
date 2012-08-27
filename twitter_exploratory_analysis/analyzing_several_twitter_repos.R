@@ -13,7 +13,7 @@
 setwd("~/github/local/VOSS-Sequencing-Toolkit/twitter_exploratory_analysis/")
 
 #Load the TraMineR and cluster libraries
-library(TraMineR)
+library(TraMineR)dput
 library(cluster)
 
 # Direct output to a textfile
@@ -25,10 +25,17 @@ library(cluster)
 ## Load CSV file
 events.raw <- read.csv(file = "all_events.csv", header = TRUE)
 
-#SO Solution
+# Create a column for the months
 
-data.split <- split(events.raw$type, events.raw$repository_name)
-data.split
+events.raw$month      <- format(as.Date(events.raw$created_at), "%Y_%m")
+events.raw$repo.month <- paste(events.raw$repository_name, events.raw$month, sep = "_")
+
+# head(events.raw)
+
+# Split up into columns per project/month
+
+data.split <- split(events.raw$type, events.raw$repo.month)
+# data.split
 
 list.to.df <- function(arg.list) {
   max.len  <- max(sapply(arg.list, length))
@@ -37,7 +44,8 @@ list.to.df <- function(arg.list) {
 }
 
 df.out <- list.to.df(data.split)
-df.out
+# df.out
+# head(df.out, 100)
 
 # Write to CSV to check
 write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
@@ -46,9 +54,8 @@ write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
 
 twitter_sequences <- read.csv(file = "out.csv", header = TRUE)
 
-# Turn this command on to get only the head of 1000
-
-twitter_sequences <- head(twitter_sequences, 1000)
+# Turn this command on to get only the head of 500
+twitter_sequences <- head(twitter_sequences, 500)
 
 twitter_sequences_transposed <- t(twitter_sequences)
 
@@ -77,10 +84,7 @@ seqici(twitter.seq)
 
 # Next are optimal distance matching statistics
 # But first we need to compute the OM
-
-twitter_costs <- seqsubm(twitter.seq, method="TRATE")
-twitter.om <- seqdist(twitter.seq, method="OM", indel=1, sm=twitter_costs, with.missing=FALSE)
-
+dput(twitter.om, file = "events_om_object")
 # Create a dendrogram
 clusterward <- agnes(twitter.om, diss = TRUE, method = "ward")
 plot(clusterward, which.plots = 2, labels=colnames(twitter_sequences))
@@ -98,10 +102,10 @@ op <- par(mar = par("mar")/2)
 op <- par(mar = rep(0, 4))
 
 # Build a typology
-cl1.4 <- cutree(clusterward, k = 10)
-cl1.4fac <- factor(cl1.4, labels = paste(colnames(twitter_sequences), 1:10))
+cl1.4 <- cutree(clusterward, k = 4)
+cl1.4fac <- factor(cl1.4, labels = c("1", "2", "3", "4"), 1:4)
 
-cl1.4fac <- factor(cl1.4,, 1:10)
+cl1.4fac <- factor(cl1.4, 1)
 
 seqdplot(twitter.seq, group = cl1.4fac, border = NA, space=0, use.layout=TRUE)
 
@@ -109,3 +113,32 @@ seqfplot(twitter.seq, group = cl1.4fac, border = NA)
 
 ## Representative set using the neighborhood density criterion
 twitter.rep <- seqrep(twitter.seq, dist.matrix=twitter.om, criterion="density")
+
+# Testing code for how to ordered labels from the tree
+
+library(TraMineR) 
+library(cluster)
+
+data(mvad)
+
+## attaching row labels 
+rownames(mvad) <- paste("seq",rownames(mvad),sep="")
+mvad.seq <- seqdef(mvad[17:86]) 
+
+## computing the dissimilarity matrix
+dist.om <- seqdist(mvad.seq, method = "OM", indel = 1, sm = "TRATE")
+
+## assigning row and column labels 
+rownames(dist.om) <- rownames(mvad) 
+colnames(dist.om) <- rownames(mvad) 
+dist.om[1:6,1:6]
+
+## Hierarchical cluster with agnes library(cluster) 
+cward <- agnes(dist.om, diss = TRUE, method = "ward")
+
+## here we can see that cward has an order.lab component 
+attributes(cward)
+cward$order.lab
+
+
+
