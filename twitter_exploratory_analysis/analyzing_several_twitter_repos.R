@@ -13,8 +13,11 @@
 setwd("~/github/local/VOSS-Sequencing-Toolkit/twitter_exploratory_analysis/")
 
 #Load the TraMineR and cluster libraries
-library(TraMineR)dput
+library(TraMineR)
 library(cluster)
+
+
+
 
 # Direct output to a textfile
 # sink("twitter_output.txt", append=FALSE, split=FALSE)
@@ -44,8 +47,7 @@ list.to.df <- function(arg.list) {
 }
 
 df.out <- list.to.df(data.split)
-# df.out
-# head(df.out, 100)
+df.out
 
 # Write to CSV to check
 write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
@@ -55,7 +57,7 @@ write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
 twitter_sequences <- read.csv(file = "out.csv", header = TRUE)
 
 # Turn this command on to get only the head of 500
-twitter_sequences <- head(twitter_sequences, 500)
+# twitter_sequences <- head(twitter_sequences, 500)
 
 twitter_sequences_transposed <- t(twitter_sequences)
 
@@ -84,7 +86,11 @@ seqici(twitter.seq)
 
 # Next are optimal distance matching statistics
 # But first we need to compute the OM
+twitter_costs <- seqsubm(twitter.seq, method="TRATE")
+twitter.om <- seqdist(twitter.seq, method="OM", indel=1, sm=twitter_costs, with.missing=FALSE)
+
 dput(twitter.om, file = "events_om_object")
+
 # Create a dendrogram
 clusterward <- agnes(twitter.om, diss = TRUE, method = "ward")
 plot(clusterward, which.plots = 2, labels=colnames(twitter_sequences))
