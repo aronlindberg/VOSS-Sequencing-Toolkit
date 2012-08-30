@@ -97,56 +97,5 @@ dput(android.om, file = "events_om_object")
 clusterward <- agnes(android.om, diss = TRUE, method = "ward")
 plot(clusterward, which.plots = 2, labels=colnames(android_sequences))
 
-bannerplot(clusterward, labels=repo_names)
-
-# Plot stuff
-seqdplot(android.seq)
-
-#Adjust margins
-op <- par(mar = par("mar")/2)
-# par(op)  ## tidy up to restore the default par setting
-
-# Delete margin
-op <- par(mar = rep(0, 4))
-
-# Build a typology
-cl1.4 <- cutree(clusterward, k = 4)
-cl1.4fac <- factor(cl1.4, labels = c("1", "2", "3", "4"), 1:4)
-
-cl1.4fac <- factor(cl1.4, 1)
-
-seqdplot(android.seq, group = cl1.4fac, border = NA, space=0, use.layout=TRUE)
-
-seqfplot(android.seq, group = cl1.4fac, border = NA)
-
-## Representative set using the neighborhood density criterion
-android.rep <- seqrep(android.seq, dist.matrix=twitter.om, criterion="density")
-
-# Testing code for how to ordered labels from the tree
-
-library(TraMineR) 
-library(cluster)
-
-data(mvad)
-
-## attaching row labels 
-rownames(mvad) <- paste("seq",rownames(mvad),sep="")
-mvad.seq <- seqdef(mvad[17:86]) 
-
-## computing the dissimilarity matrix
-dist.om <- seqdist(mvad.seq, method = "OM", indel = 1, sm = "TRATE")
-
-## assigning row and column labels 
-rownames(dist.om) <- rownames(mvad) 
-colnames(dist.om) <- rownames(mvad) 
-dist.om[1:6,1:6]
-
-## Hierarchical cluster with agnes library(cluster) 
-cward <- agnes(dist.om, diss = TRUE, method = "ward")
-
-## here we can see that cward has an order.lab component 
-attributes(cward)
-cward$order.lab
-
 
 
