@@ -1,23 +1,22 @@
 # In order to generate the sequences I query bigquery.cloud.google.com
 # as follows:
 #
-# SELECT type, created_at, repository_name FROM 
-# [githubarchive:github.timeline]
-# WHERE
-# (created_at CONTAINS '2012-')
-# AND repository_owner="twitter"
-# ORDER BY created_at, repository_name;
-#
+# SELECT type, created_at, repository_watchers FROM [githubarchive:github.timeline]
+# WHERE 
+# (repository_name="android") AND
+# (created_at CONTAINS '2012-') AND
+# type !='WatchEvent'AND
+# type !='ForkEvent'
+# AND repository_owner="github"
+# ORDER BY created_at;
+#   
 
 #Set the working directory
-setwd("~/github/local/VOSS-Sequencing-Toolkit/twitter_exploratory_analysis/")
+setwd("~/github/local/VOSS-Sequencing-Toolkit/github_android_sequencing/")
 
 #Load the TraMineR and cluster libraries
 library(TraMineR)
 library(cluster)
-
-
-
 
 # Direct output to a textfile
 # sink("twitter_output.txt", append=FALSE, split=FALSE)
@@ -26,7 +25,7 @@ library(cluster)
 # sink(file = NULL)
 
 ## Load CSV file
-events.raw <- read.csv(file = "all_events.csv", header = TRUE)
+events.raw <- read.csv(file = "android.csv", header = TRUE)
 
 # Create a column for the months
 
@@ -54,54 +53,54 @@ write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
 
 ## Load CSV file with raw sequence data
 
-twitter_sequences <- read.csv(file = "out.csv", header = TRUE)
+android_sequences <- read.csv(file = "out.csv", header = TRUE)
 
 # Turn this command on to get only the head of 500
 # twitter_sequences <- head(twitter_sequences, 500)
 
-twitter_sequences_transposed <- t(twitter_sequences)
+android_sequences_transposed <- t(android_sequences)
 
-repo_names = colnames(twitter_sequences)
+repo_names = colnames(android_sequences)
 
 ## Define the sequence object
-twitter.seq <- seqdef(twitter_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
+android.seq <- seqdef(android_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
 
 ## Summarize the sequence object
-summary(twitter.seq)
+summary(android.seq)
 
 ## Mean Frequencies
-seqmeant(twitter.seq)
+seqmeant(android.seq)
 
 ## Frequency distributions for each sequence
-seqistatd(twitter.seq)
+seqistatd(android.seq)
 
 # Transition rates
-seqtrate(twitter.seq)
+seqtrate(android.seq)
 
 # Entropy
-seqient(twitter.seq)
+seqient(android.seq)
 
 # Turbulence
-seqST(twitter.seq)
+seqST(android.seq)
 
 # Complexity
-seqici(twitter.seq)
+seqici(android.seq)
 
 # Next are optimal distance matching statistics
 # But first we need to compute the OM
-twitter_costs <- seqsubm(twitter.seq, method="TRATE")
-twitter.om <- seqdist(twitter.seq, method="OM", indel=1, sm=twitter_costs, with.missing=FALSE, norm="maxdist")
+android_costs <- seqsubm(android.seq, method="TRATE")
+android.om <- seqdist(android.seq, method="OM", indel=1, sm=android_costs, with.missing=FALSE, norm="maxdist")
 
-dput(twitter.om, file = "events_om_object")
+dput(android.om, file = "events_om_object")
 
 # Create a dendrogram
-clusterward <- agnes(twitter.om, diss = TRUE, method = "ward")
-plot(clusterward, which.plots = 2, labels=colnames(twitter_sequences))
+clusterward <- agnes(android.om, diss = TRUE, method = "ward")
+plot(clusterward, which.plots = 2, labels=colnames(android_sequences))
 
 bannerplot(clusterward, labels=repo_names)
 
 # Plot stuff
-seqdplot(twitter.seq)
+seqdplot(android.seq)
 
 #Adjust margins
 op <- par(mar = par("mar")/2)
@@ -116,12 +115,12 @@ cl1.4fac <- factor(cl1.4, labels = c("1", "2", "3", "4"), 1:4)
 
 cl1.4fac <- factor(cl1.4, 1)
 
-seqdplot(twitter.seq, group = cl1.4fac, border = NA, space=0, use.layout=TRUE)
+seqdplot(android.seq, group = cl1.4fac, border = NA, space=0, use.layout=TRUE)
 
-seqfplot(twitter.seq, group = cl1.4fac, border = NA)
+seqfplot(android.seq, group = cl1.4fac, border = NA)
 
 ## Representative set using the neighborhood density criterion
-twitter.rep <- seqrep(twitter.seq, dist.matrix=twitter.om, criterion="density")
+android.rep <- seqrep(android.seq, dist.matrix=twitter.om, criterion="density")
 
 # Testing code for how to ordered labels from the tree
 
