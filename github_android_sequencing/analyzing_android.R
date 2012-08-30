@@ -1,24 +1,18 @@
 # In order to generate the sequences I query bigquery.cloud.google.com
 # as follows:
 #
-# SELECT gt1.type, gt1.created_at, gt1.repository_owner, gt1.repository_name, 
-# gt1.actor_attributes_email, gt1.actor_attributes_login, gt1.actor_attributes_name
-# FROM [githubarchive:github.timeline] as gt1
-# INNER JOIN (
-#   SELECT actor_attributes_login 
-#   FROM [githubarchive:github.timeline]
-#   WHERE (type = "ForkEvent" OR type = "PublicEvent") AND
-#   repository_owner = "puma" AND
-#   repository_name = "puma"
-# ) as gt2
-# ON gt2.actor_attributes_login == repository_owner
-# WHERE gt1.repository_name="puma" AND
-# gt1.type != "WatchEvent"
-# ORDER BY gt1.created_at, gt1.repository_name;
+# SELECT type, created_at, repository_watchers FROM [githubarchive:github.timeline]
+# WHERE 
+# (repository_name="android") AND
+# (created_at CONTAINS '2012-') AND
+# type !='WatchEvent'AND
+# type !='ForkEvent'
+# AND repository_owner="github"
+# ORDER BY created_at;
 #   
 
 #Set the working directory
-setwd("~/github/local/VOSS-Sequencing-Toolkit/puma_puma_sequencing/")
+setwd("~/github/local/VOSS-Sequencing-Toolkit/github_android_sequencing/")
 
 #Load the TraMineR and cluster libraries
 library(TraMineR)
@@ -31,7 +25,7 @@ library(cluster)
 # sink(file = NULL)
 
 ## Load CSV file
-events.raw <- read.csv(file = "input.csv", header = TRUE)
+events.raw <- read.csv(file = "android.csv", header = TRUE)
 
 # Create a column for the months
 
@@ -55,52 +49,53 @@ df.out <- list.to.df(data.split)
 df.out
 
 # Write to CSV to check
-write.csv(df.out, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
+write.csv(df.out, file = "out.csv", quote = FALSE, na = "", row.names = FALSE)
 
 ## Load CSV file with raw sequence data
 
-sequences <- read.csv(file = "output.csv", header = TRUE)
+android_sequences <- read.csv(file = "out.csv", header = TRUE)
 
 # Turn this command on to get only the head of 500
 # twitter_sequences <- head(twitter_sequences, 500)
 
-sequences_transposed <- t(sequences)
+android_sequences_transposed <- t(android_sequences)
 
-repo_names = colnames(sequences)
+repo_names = colnames(android_sequences)
 
 ## Define the sequence object
-sequences.seq <- seqdef(sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
+android.seq <- seqdef(android_sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
 
 ## Summarize the sequence object
-summary(sequences.seq)
+summary(android.seq)
 
 ## Mean Frequencies
-seqmeant(sequences.seq)
+seqmeant(android.seq)
 
 ## Frequency distributions for each sequence
-seqistatd(sequences.seq)
+seqistatd(android.seq)
 
 # Transition rates
-seqtrate(sequences.seq)
+seqtrate(android.seq)
 
 # Entropy
-seqient(sequences.seq)
+seqient(android.seq)
 
 # Turbulence
-seqST(sequences.seq)
+seqST(android.seq)
 
 # Complexity
-seqici(sequences.seq)
+seqici(android.seq)
 
 # Next are optimal distance matching statistics
 # But first we need to compute the OM
-costs <- seqsubm(sequences.seq, method="TRATE")
-sequences.om <- seqdist(sequences.seq, method="OM", indel=1, sm=costs, with.missing=FALSE, norm="maxdist")
+android_costs <- seqsubm(android.seq, method="TRATE")
+android.om <- seqdist(android.seq, method="OM", indel=1, sm=android_costs, with.missing=FALSE, norm="maxdist")
 
-dput(sequences.om, file = "events_om_object")
+dput(android.om, file = "events_om_object")
 
 # Create a dendrogram
-clusterward <- agnes(sequences.om, diss = TRUE, method = "ward")
-plot(clusterward, which.plots = 2, labels=colnames(sequences))
+clusterward <- agnes(android.om, diss = TRUE, method = "ward")
+plot(clusterward, which.plots = 2, labels=colnames(android_sequences))
+
 
 
