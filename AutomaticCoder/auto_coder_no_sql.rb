@@ -108,6 +108,8 @@ begin
   f = File.new("#{@options[:actor]}_#{@options[:repository]}_seq.txt", 'w') #creating sequence file
   events.enum_for(:each_with_index).collect{|event, i| #iterate through events array with index
     f.puts(event_to_sequence(event, i)) #append sequence to file
+  #puts event_to_sequence(event, i) #append sequence to file
+  #puts event.to_s
   }
   f.close #close file
   rescue (Octokit::NotFound) then puts "Could not find project #{@options[:actor]}/#{@options[:repository]}" #rescue project not found error
