@@ -19,7 +19,6 @@
 
 #Set the working directory
 setwd("~/github/local/VOSS-Sequencing-Toolkit/rubinius_rubinius_sequencing/")
-
 #Load the TraMineR and cluster libraries
 library(TraMineR)
 library(cluster)
