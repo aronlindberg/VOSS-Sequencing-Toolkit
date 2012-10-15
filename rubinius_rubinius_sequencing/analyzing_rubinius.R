@@ -22,6 +22,7 @@ setwd("~/github/local/VOSS-Sequencing-Toolkit/rubinius_rubinius_sequencing/")
 #Load the TraMineR and cluster libraries
 library(TraMineR)
 library(cluster)
+library(stringr)
 
 # Direct output to a textfile
 # sink("twitter_output.txt", append=FALSE, split=FALSE)
@@ -30,35 +31,71 @@ library(cluster)
 # sink(file = NULL)
 
 ## Load CSV file
-events.raw <- read.csv(file = "input.csv", header = TRUE)
+df <- read.csv(file = "rubinius_6months.csv", header = TRUE)
 
-# Create a column for the months
+# split df by month
+by.mon <- split(df, months(as.POSIXct(df$created_at)))
 
-events.raw$month      <- format(as.Date(events.raw$created_at), "%Y_%m")
-events.raw$repo.month <- paste(events.raw$repository_name, events.raw$month, sep = "_")
+# sort by month
+by.mon <- by.mon[order(match(names(by.mon), month.name))]
 
-# head(events.raw)
+# rename the columns to include the month name
+by.mon <- mapply(
+  function(x, mon.name) {
+    names(x) <- paste(mon.name, names(x), sep='_');
+    return(x)
+  }, x=by.mon, mon.name=names(by.mon), SIMPLIFY=FALSE)
 
-# Split up into columns per project/month
+# add an index column for merging on
+by.mon.indexed <- lapply(by.mon, function(x) within(x, index <- 1:nrow(x)))
 
-data.split <- split(events.raw$type, events.raw$repo.month)
-# data.split
+# merge all of the months together
+results <- Reduce(function(x, y) merge(x, y, by='index', all=TRUE, sort=FALSE), 
+                  by.mon.indexed)
 
-list.to.df <- function(arg.list) {
-  max.len  <- max(sapply(arg.list, length))
-  arg.list <- lapply(arg.list, `length<-`, max.len)
-  as.data.frame(arg.list)
-}
-
-df.out <- list.to.df(data.split)
-df.out
+# remove the index column
+final_result <- results[names(results) != 'index']
 
 # Write to CSV to check
-write.csv(df.out, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
+write.csv(final_result, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
 
 ## Load CSV file with raw sequence data
 
 sequences <- read.csv(file = "output.csv", header = TRUE)
+
+# Now, we need to create categories where there are email addresses (i.e month_actor_attributes_email). Below is the function that Hadley Wickham wrote that finds and replaces all.
+
+replace_all <- function(df, pattern, replacement) {
+  char <- vapply(df, function(x) is.factor(x) || is.character(x), logical(1))
+  df[char] <- lapply(df[char], str_replace_all, pattern, replacement)  
+  df
+}
+
+# Here are the function calls based on Tim's K-means clustering:
+
+# Core committers
+sequences <- replace_all(sequences, fixed("bford@engineyard.com"), "core")
+sequences <- replace_all(sequences, fixed("brixen@gmail.com"), "core")
+sequences <- replace_all(sequences, fixed("evan@fallingsnow.net"), "core")
+
+# High committers
+sequences <- replace_all(sequences, fixed("ephoenix@engineyard.com"), "core")
+sequences <- replace_all(sequences, fixed("projects@kittensoft.org"), "high")
+sequences <- replace_all(sequences, fixed("steve@steveklabnik.com"), "high")
+sequences <- replace_all(sequences, fixed("jesse@jc00ke.com"), "high")
+sequences <- replace_all(sequences, fixed("argentoff@gmail.com"), "high")
+sequences <- replace_all(sequences, fixed("davis@engineyard.com"), "high")
+sequences <- replace_all(sequences, fixed("tmornini@engineyard.com"), "high")
+
+# Medium committers
+sequences <- replace_all(sequences, fixed("d.bussink@gmail.com"), "medium")
+
+# Low committers
+# HERE YOU NEED TO FIND A WAY OF REPLACING ALL THE BLANKS IN THE ACTOR COLUMNS WITH "LOW"
+
+# Write to CSV to check
+write.csv(sequences, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
+
 
 # Turn this command on to get only the head of 500
 # twitter_sequences <- head(twitter_sequences, 500)
