@@ -91,7 +91,9 @@ sequences <- replace_all(sequences, fixed("tmornini@engineyard.com"), "high")
 sequences <- replace_all(sequences, fixed("d.bussink@gmail.com"), "medium")
 
 # Low committers
-# HERE YOU NEED TO FIND A WAY OF REPLACING ALL THE BLANKS IN THE ACTOR COLUMNS WITH "LOW"
+# HERE YOU NEED TO FIND A WAY OF REPLACING ALL THE BLANKS IN THE ACTOR COLUMNS WITH "LOW".
+
+# ALSO, I NEED A FUNCTION THAT REPLACES ALL UNKNOWN EMAIL ADDRESSES WITH "LOW".
 
 # Write to CSV to check
 write.csv(sequences, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
