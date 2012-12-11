@@ -31,7 +31,10 @@ library(stringr)
 # sink(file = NULL)
 
 ## Load CSV file
-df <- read.csv(file = "rubinius_6months.csv", header = TRUE)
+df <- read.csv(file = "input.csv", header = TRUE)
+
+# Clean up time format
+format(as.POSIXct(df$created_at,format="%Y-%m-%dT17:%H:%M"),"%m/%d/%y %H:%M")
 
 # split df by month
 by.mon <- split(df, months(as.POSIXct(df$created_at)))
@@ -102,12 +105,13 @@ write.csv(sequences, file = "output.csv", quote = FALSE, na = "", row.names = FA
 # Turn this command on to get only the head of 500
 # twitter_sequences <- head(twitter_sequences, 500)
 
-sequences_transposed <- t(sequences)
+# Turn this on if you need to transpose the data
+# sequences_transposed <- t(sequences)
 
 repo_names = colnames(sequences)
 
 ## Define the sequence object
-sequences.seq <- seqdef(sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
+sequences.seq <- seqdef(sequences, left="DEL", right="DEL", gaps="DEL", missing="")
 
 ## Summarize the sequence object
 summary(sequences.seq)
