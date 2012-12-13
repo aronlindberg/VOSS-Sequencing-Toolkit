@@ -31,36 +31,36 @@ library(stringr)
 # sink(file = NULL)
 
 ## Load CSV file
-df <- read.csv(file = "input.csv", header = TRUE)
+events.raw <- read.csv(file = "input.csv", header = TRUE)
 
 # Clean up time format
-format(as.POSIXct(df$created_at,format="%Y-%m-%dT17:%H:%M"),"%m/%d/%y %H:%M")
+format(as.POSIXct(events.raw$created_at,format="%Y-%m-%dT17:%H:%M"),"%m/%d/%y %H:%M")
 
-# split df by month
-by.mon <- split(df, months(as.POSIXct(df$created_at)))
+# Delete events called "Event" and "StatusEvent"
+events.raw <- subset(events.raw, type!="Event")
+events.raw <- subset(events.raw, type!="StatusEvent")
+events.raw <- subset(events.raw, type!="PullRequestReviewCommentEvent")
 
-# sort by month
-by.mon <- by.mon[order(match(names(by.mon), month.name))]
+# Create a new column that combines repository_name and month
+events.raw$month      <- format(as.Date(events.raw$created_at), "%Y_%m")
+events.raw$repo.month <- paste(events.raw$repository_name,
+                               events.raw$month, sep = "_")
 
-# rename the columns to include the month name
-by.mon <- mapply(
-  function(x, mon.name) {
-    names(x) <- paste(mon.name, names(x), sep='_');
-    return(x)
-  }, x=by.mon, mon.name=names(by.mon), SIMPLIFY=FALSE)
+# Reformat the data
 
-# add an index column for merging on
-by.mon.indexed <- lapply(by.mon, function(x) within(x, index <- 1:nrow(x)))
+data.split <- split(events.raw$type, events.raw$repo.month)
 
-# merge all of the months together
-results <- Reduce(function(x, y) merge(x, y, by='index', all=TRUE, sort=FALSE), 
-                  by.mon.indexed)
+list.to.df <- function(arg.list) {
+  max.len  <- max(sapply(arg.list, length))
+  arg.list <- lapply(arg.list, `length<-`, max.len)
+  as.data.frame(arg.list)
+}
 
-# remove the index column
-final_result <- results[names(results) != 'index']
+df.out <- list.to.df(data.split)
+head(df.out)
 
 # Write to CSV to check
-write.csv(final_result, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
+write.csv(df.out, file = "output.csv", quote = FALSE, na = "", row.names = FALSE)
 
 ## Load CSV file with raw sequence data
 
@@ -106,12 +106,12 @@ write.csv(sequences, file = "output.csv", quote = FALSE, na = "", row.names = FA
 # twitter_sequences <- head(twitter_sequences, 500)
 
 # Turn this on if you need to transpose the data
-# sequences_transposed <- t(sequences)
+sequences_transposed <- t(sequences)
 
 repo_names = colnames(sequences)
 
 ## Define the sequence object
-sequences.seq <- seqdef(sequences, left="DEL", right="DEL", gaps="DEL", missing="")
+sequences.seq <- seqdef(sequences_transposed, left="DEL", right="DEL", gaps="DEL", missing="")
 
 ## Summarize the sequence object
 summary(sequences.seq)
@@ -138,6 +138,14 @@ seqici(sequences.seq)
 # But first we need to compute the OM
 costs <- seqsubm(sequences.seq, method="TRATE")
 sequences.om <- seqdist(sequences.seq, method="OM", indel=1, sm=costs, with.missing=FALSE, norm="maxdist")
+
+# print frequences, OM-distances, & entropy to CSV
+write.csv(seqistatd(sequences.seq), file = "stats.csv", quote = FALSE, na = "", row.names = TRUE)
+
+write.csv(sequences.om, file = "OM-distances2.csv", quote = FALSE, na = "", row.names = TRUE)
+
+write.csv(seqient(sequences.seq), file = "entropy.csv", quote = FALSE, na = "", row.names = TRUE)
+
 
 dput(sequences.om, file = "events_om_object")
 
