@@ -139,15 +139,19 @@ seqici(sequences.seq)
 costs <- seqsubm(sequences.seq, method="TRATE")
 sequences.om <- seqdist(sequences.seq, method="OM", indel=1, sm=costs, with.missing=FALSE, norm="maxdist")
 
-# print frequences, OM-distances, & entropy to CSV
+# print frequences & OM-distances to CSV
 write.csv(seqistatd(sequences.seq), file = "stats.csv", quote = FALSE, na = "", row.names = TRUE)
 
 write.csv(sequences.om, file = "OM-distances2.csv", quote = FALSE, na = "", row.names = TRUE)
 
-write.csv(seqient(sequences.seq), file = "entropy.csv", quote = FALSE, na = "", row.names = TRUE)
+# print diversity measures to the same file
+write.csv(data.frame(entropy=seqient(sequences.seq), complexity=seqici(sequences.seq), turbulence=seqST(sequences.seq)), file = "diversity_measures.csv", quote = FALSE, na = "", row.names = TRUE)
 
 
 dput(sequences.om, file = "events_om_object")
+
+dput(sequences.seq, file = "sequences.seq_object")
+
 
 # Create a dendrogram
 clusterward <- agnes(sequences.om, diss = TRUE, method = "ward")
