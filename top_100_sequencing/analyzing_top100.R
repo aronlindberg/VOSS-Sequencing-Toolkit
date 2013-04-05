@@ -9,17 +9,15 @@
 # 3. Write the matrix as a column
 # 4. Make sure the column is correctly sorted
 
-data <- read.csv(file = "data.csv", header="TRUE")
+# data <- read.csv(file = "data.csv", header="TRUE")
 
-For the first n to n+9 columns # The first 10 columns are different months of the same project, and should be sequences against each other, the 2nd 10 are for a second project and should be sequenced against each other...all the way to the 100th project (1000th column)
-START
-data.seq <- seqdef(data$n to n+9) # Define a sequence object out of the first 10 columns
-data.om <- seqdist(data.seq) # Write the OM distances between those columns to an object
-write.csv(diag(data.om), file = "OM_distances") # Write the diagonal to a column (earliest month on top, later months below)
-n+9 # Move to columns 11-20 and repeat the process, then do 21-30 etc., all the way to the 100th project and the 1000th column
-GOTO START
-
-
+# For the first n to n+9 columns # The first 10 columns are different months of the same project, and should be sequences against each other, the 2nd 10 are for a second project and should be sequenced against each other...all the way to the 100th project (1000th column)
+# START
+# data.seq <- seqdef(data$n to n+9) # Define a sequence object out of the first 10 columns
+# data.om <- seqdist(data.seq) # Write the OM distances between those columns to an object
+# write.csv(diag(data.om), file = "OM_distances") # Write the diagonal to a column (earliest month on top, later months below)
+# n+9 # Move to columns 11-20 and repeat the process, then do 21-30 etc., all the way to the 100th project and the 1000th column
+# GOTO START
 
 #Set the working directory
 setwd("~/github/local/VOSS-Sequencing-Toolkit/top_100_sequencing/")
@@ -36,7 +34,7 @@ library(stringr)
 
 ## Load CSV file
 
-sequences <- read.csv(file = "event-stream-100.csv", header = TRUE, nrows=10)
+sequences <- read.csv(file = "event-stream-20-l-m.csv", header = TRUE, nrows=10)
 
 # Turn this command on to get only the head of 100
 # twitter_sequences <- head(twitter_sequences, 100)
@@ -47,14 +45,19 @@ sequences <- read.csv(file = "event-stream-100.csv", header = TRUE, nrows=10)
 repo_names = colnames(sequences)
 
 # Turn this on if you want to drop the timestamp columns
-sequences <- sequences[, -grep("\\timestamps$", colnames(sequences))]
+# sequences <- sequences[, -grep("\\timestamps$", colnames(sequences))]
 
 # Loop across 10 columns at a time
 
 ## Loop across and define the sequence object
-colpicks <- seq(10,1000,by=10)
-mapply(function(start,stop) seqdef(sequences[,start:stop]), colpicks-9, colpicks)
+colpicks <- seq(10,240,by=10)
+sequence_objects <- mapply(function(start,stop) seqdef(sequences[,start:stop]), colpicks-9, colpicks)
 
+# Next are optimal distance matching statistics
+# But first we need to compute the OM
+costs <- mapply(function(start,stop) seqsubm(sequence_objects[,start:stop], method="TRATE"), colpicks-9, colpicks)
+
+sequences.om <- seqdist(sequences.seq, method="OM", indel=1, sm=costs, with.missing=FALSE, norm="maxdist")
 
 ## Loop through OM distances and save the superdiagonal
 
