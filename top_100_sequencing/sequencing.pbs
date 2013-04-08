@@ -1,0 +1,14 @@
+#PBS -l nodes=1:ppn=1,mem=2gb
+#PBS -N twitter_sequencing
+#PBS -j oe 
+#PBS -m b
+#PBS -M aron.lindberg@case.edu
+#PBS -l walltime=36:00:00
+
+module load R-2.13.2
+cp * $PFSDIR
+cd $PFSDIR
+R CMD BATCH /home/axl340/twitter_exploratory_analysis/analyzing_several_twitter_repos.R
+cp $PFSDIR/* $PBS_O_WORKDIR
+
+# IMPLEMENT COMMAND TO WRITE OUTPUT

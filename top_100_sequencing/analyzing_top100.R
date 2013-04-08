@@ -51,19 +51,37 @@ repo_names = colnames(sequences)
 
 ## Loop across and define the sequence object
 colpicks <- seq(10,240,by=10)
-sequence_objects <- mapply(function(start,stop) seqdef(sequences[,start:stop]), colpicks-9, colpicks)
+sequence_objects <- mapply(function(start,stop) seqdef(sequences[,start:stop]), colpicks-9, colpicks, SIMPLIFY = FALSE)
 
 # Next are optimal distance matching statistics
-# But first we need to compute the OM
-costs <- mapply(function(start,stop) seqsubm(sequence_objects[,start:stop], method="TRATE"), colpicks-9, colpicks)
+# But first we need to compute the OM (not needed if you use the TRATE function in the command after this)
+# costs <- lapply(sequence_objects, seqsubm, method="TRATE")
 
-sequences.om <- seqdist(sequences.seq, method="OM", indel=1, sm=costs, with.missing=FALSE, norm="maxdist")
+sequences.om <- lapply(sequence_objects, seqdist, method="OM", indel=1, sm="TRATE", with.missing=TRUE, norm="maxdist")
 
 ## Loop through OM distances and save the superdiagonal
 
-offd <- cbind(1:9,2:10) # For 10 sequences
-sequences.om[offd]
+m <- sequences.om
 
+offdiag <- function(m, offset){
+  i <- seq_len(nrow(m)-offset)
+  j <- i + offset
+  m[cbind(i,j)]
+  
+}
+
+offdiag(m, 1)
+
+transition_rates <- lapply(sequences.om, offdiag, offset=1)
+
+# Save as a table
+
+matrix(unlist(transition_rates), nrow = length(transition_rates), byrow = TRUE)
+
+# Write to a file
+write.csv(transition_rates, file = "transition_rates.csv", quote = FALSE, na = "")
+
+##################################################################
 
 ## Define the sequence object
 sequences.seq <- seqdef(sequences, left="DEL", right="DEL", gaps="DEL", missing="")
