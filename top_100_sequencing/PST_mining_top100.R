@@ -16,15 +16,18 @@ library(stringr)
 
 ## Load CSV file
 
-sequences <- read.csv(file = "event-stream-100-l.csv", header = TRUE, nrows=10)
+sequences <- read.csv(file = "event-stream-100-l.csv", header = TRUE, nrows=50)
 
 # Turn this command on to get only the head of 100
-sequences <- head(sequences, 100)
+# sequences <- head(sequences, 100)
 
 # Turn this on if you need to transpose the data
-# sequences <- t(sequences)
+sequences <- t(sequences)
 
-repo_names = colnames(sequences)
+# Turn this on to get only 10 sequences
+sequences <- head(sequences, 10)
+
+# repo_names = colnames(sequences)
 
 # Turn this on if you want to drop the timestamp columns
 # sequences <- sequences[, -grep("\\timestamps$", colnames(sequences))]
@@ -35,5 +38,8 @@ repo_names = colnames(sequences)
 ## Define the sequence object
 sequences.seq <- seqdef(sequences, left="DEL", right="DEL", gaps="DEL", missing="")
 
-sequences.pst <- pstree(sequences.seq, with.missing=FALSE)
-sequences.pm <- pmine(sequences.pst, output='patterns')
+# Fit PST model
+sequences.pst <- pstree(sequences.seq)
+
+# Mine patterns
+sequences.pm <- pmine(sequences.pst, sequences.seq, pmin=0.4, output='patterns')
